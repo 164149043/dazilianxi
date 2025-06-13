@@ -1,8 +1,9 @@
 interface VirtualKeyboardProps {
   currentChar?: string
+  hasError?: boolean
 }
 
-export default function VirtualKeyboard({ currentChar }: VirtualKeyboardProps) {
+export default function VirtualKeyboard({ currentChar, hasError }: VirtualKeyboardProps) {
   // 键盘布局定义
   const keyboardRows = [
     ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '='],
@@ -10,14 +11,6 @@ export default function VirtualKeyboard({ currentChar }: VirtualKeyboardProps) {
     ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', "'"],
     ['z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/']
   ]
-
-  // 特殊键位
-  const specialKeys = {
-    space: ' ',
-    tab: 'Tab',
-    backspace: 'Backspace',
-    enter: 'Enter'
-  }
 
   // 获取按键样式
   const getKeyStyle = (key: string) => {
@@ -28,7 +21,9 @@ export default function VirtualKeyboard({ currentChar }: VirtualKeyboardProps) {
       inline-flex items-center justify-center min-w-[40px] h-10 m-0.5
       border border-gray-300 rounded text-sm font-medium
       transition-colors duration-150
-      ${isActive
+      ${isActive && hasError
+        ? 'bg-red-500 text-white border-red-600 shadow-lg animate-pulse'
+        : isActive
         ? 'bg-blue-500 text-white border-blue-600 shadow-lg'
         : 'bg-white text-gray-700 hover:bg-gray-50'
       }
@@ -43,7 +38,9 @@ export default function VirtualKeyboard({ currentChar }: VirtualKeyboardProps) {
       inline-flex items-center justify-center h-10 m-0.5 px-3
       border border-gray-300 rounded text-sm font-medium
       transition-colors duration-150 ${width}
-      ${isActive
+      ${isActive && hasError
+        ? 'bg-red-500 text-white border-red-600 shadow-lg animate-pulse'
+        : isActive
         ? 'bg-blue-500 text-white border-blue-600 shadow-lg'
         : 'bg-white text-gray-700 hover:bg-gray-50'
       }
@@ -51,7 +48,7 @@ export default function VirtualKeyboard({ currentChar }: VirtualKeyboardProps) {
   }
 
   return (
-    <div className="max-w-4xl w-full">
+    <div className="w-full max-w-4xl">
       <div className="bg-gray-100 rounded-lg p-4 border border-gray-200">
         {/* 数字和符号行 */}
         <div className="flex justify-center mb-1">
@@ -89,12 +86,6 @@ export default function VirtualKeyboard({ currentChar }: VirtualKeyboardProps) {
               {key}
             </button>
           ))}
-          <button
-            className={getSpecialKeyStyle('enter', 'min-w-[60px]')}
-            type="button"
-          >
-            ↵
-          </button>
         </div>
 
         {/* 第二行字母 */}
@@ -175,12 +166,11 @@ export default function VirtualKeyboard({ currentChar }: VirtualKeyboardProps) {
           </button>
         </div>
 
-        {/* 指法提示 */}
+        {/* 当前按键提示 */}
         <div className="mt-4 text-center text-sm text-gray-600">
-          <p className="mb-1">指法练习：左手食指 = F键，右手食指 = J键</p>
           <p>
             当前按键:
-            <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 rounded font-mono">
+            <span className="ml-2 px-3 py-1 bg-blue-100 text-blue-800 rounded font-mono font-bold">
               {currentChar === ' ' ? '空格' : currentChar || '-'}
             </span>
           </p>
